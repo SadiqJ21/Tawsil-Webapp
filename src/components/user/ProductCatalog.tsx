@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Search, Heart, ShoppingCart, Loader2 } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../utils/supabase/info';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface Product {
   id: string;
@@ -28,6 +28,7 @@ interface ProductCatalogProps {
   onViewProduct: (product: Product) => void;
 }
 
+
 export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -38,18 +39,18 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
   const [addingToWishlist, setAddingToWishlist] = useState<string | null>(null);
 
+  // fetch products and categories on initial load
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, []);
 
+  //fetch products from backend
   const fetchProducts = async () => {
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/products`,
-        {
-          headers: { 'Authorization': `Bearer ${publicAnonKey}` }
-        }
+        { headers: { Authorization: `Bearer ${publicAnonKey}` } }
       );
       const data = await response.json();
       setProducts(data.products || []);
@@ -61,13 +62,12 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
     }
   };
 
+  //fetch categories from backend
   const fetchCategories = async () => {
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/categories`,
-        {
-          headers: { 'Authorization': `Bearer ${publicAnonKey}` }
-        }
+        { headers: { Authorization: `Bearer ${publicAnonKey}` } }
       );
       const data = await response.json();
       setCategories(data.categories || []);
@@ -76,9 +76,9 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
     }
   };
 
+  //add product to cart (requires user token)
   const addToCart = async (product: Product) => {
     setAddingToCart(product.id);
-    
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/cart`,
@@ -86,9 +86,9 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ productId: product.id, quantity: 1 })
+          body: JSON.stringify({ productId: product.id, quantity: 1 }),
         }
       );
 
@@ -106,9 +106,9 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
     }
   };
 
+  //add product to wishlist (requires user token)
   const addToWishlist = async (product: Product) => {
     setAddingToWishlist(product.id);
-    
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/wishlist`,
@@ -116,9 +116,9 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ productId: product.id })
+          body: JSON.stringify({ productId: product.id }),
         }
       );
 
@@ -136,11 +136,14 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
     }
   };
 
+  //filtered and sorted products based on user input
   const filteredProducts = products
     .filter((product) => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === 'all' || product.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
@@ -155,6 +158,7 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
       }
     });
 
+  //loading state
   if (loading) {
     return (
       <div className="flex justify-center py-12">
@@ -165,7 +169,7 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
 
   return (
     <div>
-      {/* Filters */}
+      {/*filters search, category, sort*/}
       <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
@@ -178,6 +182,7 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
             />
           </div>
 
+          {/*category dropdown*/}
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger>
               <SelectValue placeholder="All Categories" />
@@ -192,6 +197,7 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
             </SelectContent>
           </Select>
 
+          {/*sort dropdown*/}
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger>
               <SelectValue placeholder="Sort By" />
@@ -205,14 +211,12 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
         </div>
       </div>
 
-      {/* Products Grid */}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product) => (
           <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-            <div
-              className="cursor-pointer"
-              onClick={() => onViewProduct(product)}
-            >
+            {/* clickable card body to open product view */}
+            <div className="cursor-pointer" onClick={() => onViewProduct(product)}>
               <img
                 src={product.image}
                 alt={product.name}
@@ -232,11 +236,17 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
                 </div>
               </div>
             </div>
+
+            {/* add to cart/wishlist card buttons */}
             <div className="flex gap-2 p-4 pt-0">
               <Button
                 className="flex-1"
                 onClick={() => addToCart(product)}
-                disabled={product.stock === 0 || addingToCart === product.id || addingToWishlist === product.id}
+                disabled={
+                  product.stock === 0 ||
+                  addingToCart === product.id ||
+                  addingToWishlist === product.id
+                }
               >
                 {addingToCart === product.id ? (
                   <>
@@ -250,6 +260,7 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
                   </>
                 )}
               </Button>
+
               <Button
                 variant="outline"
                 onClick={() => addToWishlist(product)}
@@ -266,6 +277,7 @@ export function ProductCatalog({ accessToken, onViewProduct }: ProductCatalogPro
         ))}
       </div>
 
+      {/* empty state when no products match filters */}
       {filteredProducts.length === 0 && (
         <div className="text-center py-12 text-gray-500">
           No products found matching your criteria.

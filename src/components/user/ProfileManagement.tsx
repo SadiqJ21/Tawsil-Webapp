@@ -203,7 +203,7 @@ export function ProfileManagement({ user, accessToken }: ProfileManagementProps)
     <div className="max-w-3xl">
       <h2 className="mb-6">Profile Settings</h2>
 
-      {/*Display user information*/}
+      {/*display user information*/}
       <Card className="p-6 mb-6">
         <h3 className="mb-4">Personal Information</h3>
         <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -239,7 +239,7 @@ export function ProfileManagement({ user, accessToken }: ProfileManagementProps)
             />
           </div>
 
-          {/* Save button */}
+          {/* save button */}
           <Button type="submit" disabled={saving}>
             {saving ? (
               <>
@@ -253,7 +253,7 @@ export function ProfileManagement({ user, accessToken }: ProfileManagementProps)
         </form>
       </Card>
 
-      {/* Saved Addresses */}
+      {/* saved Addresses */}
       <Card className="p-6">
         <h3 className="mb-4">Saved Addresses</h3>
         {addresses.length > 0 && (
@@ -295,7 +295,7 @@ export function ProfileManagement({ user, accessToken }: ProfileManagementProps)
         {/* form for adding new address */}
         <h4 className="mb-4">Add New Address</h4>
         <form onSubmit={handleAddAddress} className="space-y-4">
-          {/* Name/Label for address */}
+          {/* name/label for address */}
           <div className="space-y-2">
             <Label htmlFor="name">Address Name</Label>
             <Input

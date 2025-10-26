@@ -15,11 +15,13 @@ export function LoginForm({ onSwitchToRegister, onLoginSuccess }: LoginFormProps
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  
+  /* handle form submission to log in the user */
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+    /* Attempt to sign in the user with Supabase Auth */
     try {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -43,14 +45,18 @@ export function LoginForm({ onSwitchToRegister, onLoginSuccess }: LoginFormProps
 
   return (
     <div className="w-full max-w-md mx-auto p-8 bg-white rounded-lg shadow-sm border border-gray-200">
-      <h2 className="mb-6 text-center">Welcome Back</h2>
+      <h2 className="mb-6 text-center">Sign in</h2>
+
+      {/* login form */}
       <form onSubmit={handleLogin} className="space-y-4">
+        {/* error pop up */}
         {error && (
           <div className="p-3 bg-red-50 border border-red-200 rounded text-red-600">
             {error}
           </div>
         )}
         
+        {/* email field */}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -63,6 +69,7 @@ export function LoginForm({ onSwitchToRegister, onLoginSuccess }: LoginFormProps
           />
         </div>
 
+        {/* password field */}
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input
@@ -75,12 +82,14 @@ export function LoginForm({ onSwitchToRegister, onLoginSuccess }: LoginFormProps
           />
         </div>
 
+        {/* submit button  */}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? 'Signing in...' : 'Sign In'}
         </Button>
 
+        {/* switch to register action */}
         <p className="text-center text-gray-600">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToRegister}
