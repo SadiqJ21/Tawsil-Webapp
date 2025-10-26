@@ -27,3 +27,4 @@ yarn-error.log*
 # lockfiles you don't use
 pnpm-lock.yaml
 yarn.lock
+dist/
