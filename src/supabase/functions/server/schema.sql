@@ -78,6 +78,14 @@ CREATE TABLE IF NOT EXISTS public.order_items (
   price DECIMAL(10, 2) NOT NULL,
   quantity INTEGER NOT NULL CHECK (quantity > 0)
 );
+  ALTER TABLE order_items ALTER COLUMN product_id DROP NOT NULL;
+
+  ALTER TABLE order_items
+  DROP CONSTRAINT IF EXISTS order_items_product_id_fkey,
+  ADD CONSTRAINT order_items_product_id_fkey
+  FOREIGN KEY (product_id)
+  REFERENCES products(id)
+  ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS public.activity_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
