@@ -40,7 +40,7 @@ export function ProfileManagement({ user, accessToken }: ProfileManagementProps)
     city: '',
     state: '',
     postal_code: '',
-    country: 'USA',
+    country: 'Bahrain',
     is_default: false
   });
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);

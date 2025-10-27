@@ -51,7 +51,8 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
     street: '',
     city: '',
     state: '',
-    zipCode: ''
+    zipCode: '',
+    country: ''            
   });
 
   useEffect(() => {
@@ -177,12 +178,13 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
           street: selectedAddress.street,
           city: selectedAddress.city,
           state: selectedAddress.state,
-          zipCode: selectedAddress.postal_code
+          zipCode: selectedAddress.postal_code,
+          country: selectedAddress.country 
         };
       }
     }
 
- try {
+    try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/orders`,
         {
@@ -203,7 +205,7 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
         toast.success('Order placed successfully!');
         setCheckoutOpen(false);
         fetchCart();
-        setShippingAddress({ street: '', city: '', state: '', zipCode: '' });
+        setShippingAddress({ street: '', city: '', state: '', zipCode: '', country: '' }); 
       } else {
         const error = await response.json();
         toast.error(error.error || 'Failed to place order');
@@ -240,7 +242,7 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
     );
   }
 
-
+  
   return (
     <div>
       <h2 className="mb-6">Shopping Cart</h2>
@@ -379,7 +381,7 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
                             )}
                           </div>
                           <p className="text-gray-600 leading-relaxed">
-                            {address.street}, {address.city}, {address.state} {address.postal_code}
+                            {address.street}, {address.city}, {address.state} {address.postal_code}, {address.country}
                           </p>
                         </Label>
                       </div>
@@ -441,17 +443,32 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="zipCode">ZIP Code</Label>
-                  <Input
-                    id="zipCode"
-                    value={shippingAddress.zipCode}
-                    onChange={(e) =>
-                      setShippingAddress({ ...shippingAddress, zipCode: e.target.value })
-                    }
-                    required
-                    disabled={placingOrder}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="zipCode">ZIP Code</Label>
+                    <Input
+                      id="zipCode"
+                      value={shippingAddress.zipCode}
+                      onChange={(e) =>
+                        setShippingAddress({ ...shippingAddress, zipCode: e.target.value })
+                      }
+                      required
+                      disabled={placingOrder}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="country">Country</Label>
+                    <Input
+                      id="country"
+                      value={shippingAddress.country}
+                      onChange={(e) =>
+                        setShippingAddress({ ...shippingAddress, country: e.target.value })
+                      }
+                      required
+                      disabled={placingOrder}
+                    />
+                  </div>
                 </div>
               </>
             )}
