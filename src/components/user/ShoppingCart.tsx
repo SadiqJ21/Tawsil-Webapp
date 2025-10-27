@@ -349,7 +349,7 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
           <form onSubmit={handleCheckout} className="space-y-4">
             {savedAddresses.length > 0 && (
               <>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <Label>Select Shipping Address</Label>
                   <RadioGroup
                     value={useNewAddress ? 'new' : selectedAddressId}
@@ -361,32 +361,29 @@ export function ShoppingCart({ accessToken }: ShoppingCartProps) {
                         setSelectedAddressId(value);
                       }
                     }}
-                    className="space-y-3"
                   >
                     {savedAddresses.map((address) => (
                       <div
                         key={address.id}
-                        className="grid grid-cols-[auto,1fr] items-start gap-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50"
+                        className="flex items-start space-x-2 p-3 border border-gray-200 rounded"
                       >
-                        <RadioGroupItem value={address.id} id={address.id} disabled={placingOrder} className="mt-1" />
-                        <Label htmlFor={address.id} className="flex-1 cursor-pointer block">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium">{address.name}</span>
+                        <RadioGroupItem value={address.id} id={address.id} disabled={placingOrder} />
+                        <Label htmlFor={address.id} className="flex-1 cursor-pointer">
+                          <div className="flex items-center justify-between mb-1">
+                            <span>{address.name}</span>
                             {address.is_default && (
-                              <span className="px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-600">
-                                Default
-                              </span>
+                              <span className="text-xs text-blue-600">Default</span>
                             )}
                           </div>
-                          <p className="text-gray-600 leading-relaxed">
+                          <p className="text-gray-600">
                             {address.street}, {address.city}, {address.state} {address.postal_code}
                           </p>
                         </Label>
                       </div>
                     ))}
-                    <div className="grid grid-cols-[auto,1fr] items-start gap-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50">
-                      <RadioGroupItem value="new" id="new" disabled={placingOrder} className="mt-1" />
-                      <Label htmlFor="new" className="cursor-pointer block font-medium">
+                    <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded">
+                      <RadioGroupItem value="new" id="new" disabled={placingOrder} />
+                      <Label htmlFor="new" className="cursor-pointer">
                         Use a new address
                       </Label>
                     </div>
